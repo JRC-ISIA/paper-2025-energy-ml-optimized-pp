@@ -70,8 +70,8 @@ SEGMENT_SIZE_SHIFTED_LEGENDRE = 1.0
 
 
 def get_spline_from_coeffs(coeffs, data_x, data_y, basis, ck, shift_polynomial_centers='default',
-                           total_loss_values = None, e_loss_values = None, D_loss_values = None, d_loss_values = None,
-                           rescale_x_data = True):
+                           total_loss_values = None, e_loss_values = None, D_loss_values = None, 
+                           d_loss_values = None, I_loss_values = None, rescale_x_data = True):
     '''Generate Spline from existing spline coefficients.
     Expected polynomial coefficients order is from lowest (index 0) to highest.
     See Spline class for parameter description.'''
@@ -94,6 +94,7 @@ def get_spline_from_coeffs(coeffs, data_x, data_y, basis, ck, shift_polynomial_c
     s.e_loss_values = e_loss_values
     s.D_loss_values = D_loss_values
     s.d_loss_values = d_loss_values
+    s.I_loss_values = I_loss_values
 
     return s
 

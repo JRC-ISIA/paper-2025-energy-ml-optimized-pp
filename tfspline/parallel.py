@@ -106,6 +106,14 @@ def job(param, kwargs):
             patience = kwargs['patience']
         else:
             patience = 100
+        if 'periodic' in kwargs:
+            periodic = kwargs['periodic']
+        else:
+            periodic = False
+        if 'cyclic' in kwargs:
+            cyclic = kwargs['cyclic']
+        else:
+            cyclic = False
 
         if optimizer.upper() == 'ADAM':
             opt = keras.optimizers.Adam(learning_rate=learning_rate, amsgrad=False)
@@ -233,8 +241,12 @@ def job(param, kwargs):
             factor_ck_pressure = param[1]
             factor_curvature = 0
 
+        elif mode == 'energy_pareto':
+            factor_ck_pressure = param[0]
+            factor_approximation_quality = param[1]
+            factor_curvature = 1-factor_ck_pressure-factor_approximation_quality
+
         elif mode == 'lambda_and_basis':
-            basis = param[0]
             factor_approximation_quality = 1-param[1]
             factor_ck_pressure = param[1]
             factor_curvature = 0
@@ -270,11 +282,11 @@ def job(param, kwargs):
         spline.fit(data_x, data_y, optimizer=opt, n_epochs=n_epochs, factor_approximation_quality=factor_approximation_quality,
             factor_ck_pressure=factor_ck_pressure, factor_curvature=factor_curvature, gradient_regularization=gradient_regularization, overlap_segments=seg_overlap,
             initialization=initialization, seed=seed, uniform_split=split_uniform, rescale_x_data=rescale_x_data, ck_regularization=ck_regularization,
-                   early_stopping=early_stopping, patience=patience, enforce_continuity=continuity)
+                   early_stopping=early_stopping, patience=patience, enforce_continuity=continuity, periodic=periodic, cyclic=cyclic)
 
         print("#", end="")
 
-        return [{'optimizer': optimizer, 'param_value': param}, spline.total_loss_values, spline.e_loss_values, spline.D_loss_values, spline.d_loss_values, spline.coeffs]
+        return [{'optimizer': optimizer, 'param_value': param}, spline.total_loss_values[-1], spline.e_loss_values[-1], spline.D_loss_values[-1], spline.I_loss_values[-1], spline.coeffs]
 
     except Exception as e:
         print(f'An Exception ocurred: {e}')
