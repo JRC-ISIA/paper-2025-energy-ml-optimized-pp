@@ -860,7 +860,7 @@ class Spline():
             
             # Derivatives for mean boundary points
             for k in range(no_equations_per_boundary_point):
-                if self.cyclic and k == 0:
+                if not self.periodic and self.cyclic and k == 0:
                     y1_at_first.append(0) # RHS 1
                     y1_at_last.append(0) # RHS 2
                 else:
